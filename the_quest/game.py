@@ -1,22 +1,16 @@
 import pygame as pg
 from the_quest import ALTO, ANCHO
+from the_quest.escenas import Portada
 
 pg.init()
 
 class Game():
     def __init__(self):
-        self.pantalla = pg.display.set_mode((ANCHO, ALTO))
+        pantalla = pg.display.set_mode((ANCHO, ALTO)) # esta pantalla hay que pasarsela a cada una de las escenas
+        self.escenas = [Portada(pantalla)]
 
     def launch(self):
-        game_over = False
-        while not game_over:
-            for evento in pg.event.get():
-                if evento.type == pg.QUIT:
-                    game_over = True
-            self.pantalla.fill((255, 255, 0))
-
-            pg.display.flip()
-
+        self.escenas[0].bucle_principal()
         pg.quit()
 
 
