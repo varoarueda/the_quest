@@ -1,7 +1,8 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
 from . import FPS, ANCHO, ALTO
-from .entidades import Nave
+from .entidades import Nave, Asteroide
+import random
 
 class Escena():
     def __init__(self, pantalla): # le paso la pantalla donde se va acrear la escena
@@ -14,7 +15,7 @@ class Escena():
 class Portada(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla) # Hereda de class Escena
-        self.background = pg.image.load("resources/images/bg_portada.png")
+        self.background = pg.image.load("resources/images/bg_portada.png").convert()
         self.logo = pg.image.load("resources/images/logo.png")
         fuente = pg.font.Font("resources/fonts/nasalization-rg.otf", 40)
         self.callToAction = fuente.render("Pulsa <SCP> para continuar", True, (255, 255, 255))
@@ -45,7 +46,7 @@ class Portada(Escena):
 class Instrucciones(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        self.background = pg.image.load("resources/images/bg_instrucciones.jpg")
+        self.background = pg.image.load("resources/images/bg_instrucciones.jpg").convert()
         fuente = pg.font.Font("resources/fonts/nasalization-rg.otf", 60)
         self.texto = fuente.render("Pulsa <SCP> para JUGAR", True, (255, 255, 255))
         self.anchoTexto = self.texto.get_width()
@@ -72,11 +73,28 @@ class Instrucciones(Escena):
 class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
+
+        # FONDO
         self.background = pg.image.load("resources/images/bg_partida2.jpg").convert()
         self.x = 0 # Para animar background
-        self.player = Nave(midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
-        # self.vidas = 3
+
+        #GRUPO
+        self.todos = pg.sprite.Group()
         
+        # NAVE
+        self.player = Nave(midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
+
+        # self.vidas = 3
+
+        # ASTEROIDES
+        self.asteroides = pg.sprite.Group()
+        for i in range(10):
+            asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
+            self.todos.add(asteroide)
+
+        self.todos.add(self.asteroides, self.player)
+
+
 
     def bucle_principal(self):
         print("soy partida")
@@ -87,15 +105,24 @@ class Partida(Escena):
                 if evento.type == pg.QUIT:
                     exit()
 
+            # UPDATES
+            #self.player.update(dt)
+            #for i in range(10):
+                #self.asteroides[i].update(dt)
+            self.todos.update(dt)
 
-            self.player.update(dt)
-            #Animacion fondo
+            # BLITS
             x_relativa = self.x % self.background.get_rect().width
             self.pantalla.blit(self.background, (x_relativa - self.background.get_rect().width , 0))
             if x_relativa < ANCHO:
                 self.pantalla.blit(self.background, (x_relativa, 0))
-            self.x -= 1 # Velocidad movimiento background
-            self.pantalla.blit(self.player.image, self.player.rect) # Haye que pasar la image (surface) y el rect (rectagulo) del Sprite de Nave
+            self.x -= 0.3 # Velocidad movimiento background
+            
+            #self.pantalla.blit(self.player.image, self.player.rect) # Haye que pasar la image (surface) y el rect (rectagulo) del Sprite de Nave
+
+            #for asteroide in self.asteroides:
+                #self.pantalla.blit(asteroide.image, asteroide.rect)
+            self.todos.draw(self.pantalla)
             
 
 
