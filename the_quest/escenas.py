@@ -85,9 +85,12 @@ class Partida(Escena):
 
         # ASTEROIDES
         self.asteroides = pg.sprite.Group()
-        for i in range(10):
+        for i in range(random.randrange(3, 12)):
             asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
             self.asteroides.add(asteroide)
+
+        # PUNTOS
+        self.puntos = 0
 
         # GRUPOS
         self.grupo_player = pg.sprite.Group()
@@ -113,6 +116,11 @@ class Partida(Escena):
                 #self.asteroides[i].update(dt)
             self.grupo_player.update(dt)
             self.grupo_asteroides.update(dt)
+
+            #COLLIDE
+            tocados = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
+            if len(tocados) > 0:
+                pass
 
             # BLITS
             x_relativa = self.x % self.background.get_rect().width
