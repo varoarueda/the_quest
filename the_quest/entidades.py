@@ -71,7 +71,29 @@ class Asteroide(Sprite):
             self.rect.center = (random.randrange(ANCHO+50, ANCHO+100), random.randrange(40, ALTO-40))
             self.velocidad_x = random.randrange(1, 5)
 
-   
+
+class Marcadores(Sprite):
+    def __init__(self, x, y, fichero_letra, size, color):
+        super().__init__()
+        self._texto = ""
+        self.x = x
+        self.y = y
+        self.color = color
+        self.fuente = pg.font.Font(f"resources/fonts/{fichero_letra}", size)
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x=self.x, y=self.y) 
+
+    def update(self, dt):
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x=self.x, y=self.y) 
+
+    @property
+    def texto(self):
+        return self._texto
+    
+    @texto.setter
+    def texto(self, valor):
+        self._texto = str(valor)
 
 
 

@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
 from . import FPS, ANCHO, ALTO
-from .entidades import Nave, Asteroide
+from .entidades import Nave, Asteroide, Marcadores
 import random
 
 class Escena():
@@ -33,8 +33,6 @@ class Portada(Escena):
                     if evento.key == pg.K_SPACE:
                         game_over = True
 
-
-            #self.pantalla.fill((19, 41, 81))
             self.pantalla.blit(self.background, (0,0))
             self.pantalla.blit(self.logo, (230, 250))
             self.pantalla.blit(self.callToAction, ((ANCHO-self.anchoTexto)//2, 650)) # Obtener tamaño texto y centrado
@@ -81,23 +79,37 @@ class Partida(Escena):
         # NAVE
         self.player = Nave(midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
-        # self.vidas = 3
-
         # ASTEROIDES
         self.asteroides = pg.sprite.Group()
-        for i in range(random.randrange(3, 12)):
-            asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
-            self.asteroides.add(asteroide)
+        for i in range(random.randrange(15, 30)):
+            self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
+            self.asteroides.add(self.asteroide)
 
+        # VIDAS
+        self.letras_vidas = "VIDAS"
+        self.vidas = 3
+        
         # PUNTOS
+        self.letras_puntos = "PUNTOS"
         self.puntos = 0
+        
+
+        # MARCADORES
+        self.letrero_vidas = Marcadores(20, 20, "nasalization-rg.otf", 24, (255,255,255))
+        self.cuenta_vidas = Marcadores(120, 20, "nasalization-rg.otf", 24, (255,255,255))
+
+        self.letrero_puntos = Marcadores(ANCHO - 130, 20, "nasalization-rg.otf", 24, (255,255,255))
+        self.cuenta_puntos = Marcadores(ANCHO - 180, 20, "nasalization-rg.otf", 24, (255,255,255))
+
 
         # GRUPOS
         self.grupo_player = pg.sprite.Group()
         self.grupo_asteroides = pg.sprite.Group()
+        self.grupo_marcadores = pg.sprite.Group()
 
         self.grupo_player.add(self.player)
         self.grupo_asteroides.add(self.asteroides)
+        self.grupo_marcadores.add(self.letrero_vidas, self.cuenta_vidas, self.letrero_puntos, self.cuenta_puntos)
 
 
 
@@ -110,17 +122,25 @@ class Partida(Escena):
                 if evento.type == pg.QUIT:
                     exit()
 
+            self.letrero_vidas.texto = self.letras_vidas
+            self.cuenta_vidas.texto = self.vidas
+
+            self.letrero_puntos.texto = self.letras_puntos
+            self.cuenta_puntos.texto = self.puntos
+
             # UPDATES
-            #self.player.update(dt)
-            #for i in range(10):
-                #self.asteroides[i].update(dt)
             self.grupo_player.update(dt)
             self.grupo_asteroides.update(dt)
+            self.grupo_marcadores.update(dt)
 
             #COLLIDE
             tocados = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
-            if len(tocados) > 0:
-                pass
+            print(tocados)
+            #if tocados:
+                #self.asteroide.image = pg.image.load("resources/images/explosion/explosion16.png")
+                #self.asteroide.kill()
+            
+
 
             # BLITS
             x_relativa = self.x % self.background.get_rect().width
@@ -135,6 +155,7 @@ class Partida(Escena):
                 #self.pantalla.blit(asteroide.image, asteroide.rect)
             self.grupo_player.draw(self.pantalla)
             self.grupo_asteroides.draw(self.pantalla)
+            self.grupo_marcadores.draw(self.pantalla)
 
 
 
