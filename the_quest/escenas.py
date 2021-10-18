@@ -112,7 +112,7 @@ class Partida(Escena):
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
         
-        for i in range(random.randrange(8, 15)):
+        for i in range(8):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
             self.asteroides.append(self.asteroide)
 
@@ -142,13 +142,14 @@ class Partida(Escena):
         self.grupo_asteroides.add(self.asteroides)
 
     def reset(self):
-        #self_puntos = 0
+        #contador = []
+        #self.puntos = 0
         self.vidas = 3
         self.grupo_asteroides.empty()
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
         
-        for i in range(random.randrange(8, 15)):
+        for i in range(8):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
             self.asteroides.append(self.asteroide)
         self.grupo_asteroides.add(self.asteroides)
@@ -172,6 +173,7 @@ class Partida(Escena):
             self.letrero_puntos.texto = self.letras_puntos
             self.cuenta_puntos.texto = self.puntos
 
+
             # UPDATES
             self.grupo_player.update(dt)
             self.grupo_asteroides.update(dt)
@@ -181,13 +183,22 @@ class Partida(Escena):
             colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
             if colision:
                 self.vidas -= 1
-            
-            print(self.vidas)
+
+
+            # PUNTUACION
+            #contador = 0
+            #if self.asteroide.rect.right < 8:
+                #self.puntos += 1
+            #print(self.asteroide.rect.right)
+            #print("puntos =", self.puntos)
+            for self.asteroide in self.grupo_asteroides:
+                if self.asteroide.rect.right < 8:
+                    self.puntos += 1
             
             
 
 
-            # BLITS
+            # RENDERIZADO
             x_relativa = self.x % self.background.get_rect().width
             self.pantalla.blit(self.background, (x_relativa - self.background.get_rect().width , 0))
             if x_relativa < ANCHO:
@@ -202,7 +213,7 @@ class Partida(Escena):
             self.grupo_asteroides.draw(self.pantalla)
             self.grupo_marcadores.draw(self.pantalla)
 
-
+            print(self.grupo_asteroides)
 
             pg.display.flip()
 

@@ -66,15 +66,18 @@ class Asteroide(Sprite):
         if self.imagen_aleatoria == 7:
             self.image = pg.image.load(f"resources/images/{self.disfraces[7]}")
         self.rect = self.image.get_rect(**kwargs)
-        self.velocidad_x = random.randrange(5, 7)
+        self.velocidad_x = random.randrange(5, 8)
+        self.puntos = 0
+    
 
 
     def update(self, dt):
-        #self.image = pg.transform.rotate(self.image, 90)
         self.rect.x -= self.velocidad_x
         if self.rect.right < 0:
             self.rect.center = (random.randrange(ANCHO+50, ANCHO+100), random.randrange(40, ALTO-40))
             self.velocidad_x = random.randrange(7, 9)
+
+
 
 
 
