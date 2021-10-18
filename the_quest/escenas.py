@@ -112,14 +112,14 @@ class Partida(Escena):
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
         
-        for i in range(4):
+        for i in range(random.randrange(8, 15)):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
             self.asteroides.append(self.asteroide)
-        #self.grupo_asteroides.add(self.asteroides)
+
 
         # VIDAS
         self.letras_vidas = "VIDAS"
-        self.vidas = 3
+        #self.vidas = 3
         
         # PUNTOS
         self.letras_puntos = "PUNTOS"
@@ -141,12 +141,26 @@ class Partida(Escena):
         self.grupo_marcadores.add(self.letrero_vidas, self.cuenta_vidas, self.letrero_puntos, self.cuenta_puntos)
         self.grupo_asteroides.add(self.asteroides)
 
+    def reset(self):
+        #self_puntos = 0
+        self.vidas = 3
+        self.grupo_asteroides.empty()
+        self.asteroides = []
+        self.grupo_asteroides = pg.sprite.Group()
+        
+        for i in range(random.randrange(8, 15)):
+            self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
+            self.asteroides.append(self.asteroide)
+        self.grupo_asteroides.add(self.asteroides)
+
+
+
+
 
     def bucle_principal(self):
         print("soy partida")
-        game_over = False
-        self.vidas = 3
-        while not game_over:
+        self.reset()
+        while self.vidas > 0:
             dt = self.reloj.tick(FPS) # Reloj General
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
@@ -164,12 +178,11 @@ class Partida(Escena):
             self.grupo_marcadores.update(dt)
 
             #COLLIDE
-            tocados = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
-            if (tocados):
+            colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
+            if colision:
                 self.vidas -= 1
-            if self.vidas < 1:
-                game_over = True
-            print(tocados)
+            
+            print(self.vidas)
             
             
 
