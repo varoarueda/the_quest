@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
-from . import FPS, ANCHO, ALTO
+from . import FPS, ANCHO, ALTO, game
 from .entidades import Nave, Asteroide, Marcadores
 import random
 
@@ -36,6 +36,35 @@ class Portada(Escena):
             self.pantalla.blit(self.background, (0,0))
             self.pantalla.blit(self.logo, (230, 250))
             self.pantalla.blit(self.callToAction, ((ANCHO-self.anchoTexto)//2, 650)) # Obtener tamaño texto y centrado
+
+            pg.display.flip()
+
+class Game_over(Escena):
+    def __init__(self, pantalla):
+        super().__init__(pantalla) 
+        self.background = pg.image.load("resources/images/bg_gameover.png")
+        fuente = pg.font.Font("resources/fonts/nasalization-rg.otf", 60)
+        self.texto = fuente.render("Pulsa Y para JUGAR otra vez", True, (255, 255, 255))
+        self.anchoTexto = self.texto.get_width()
+
+    def bucle_principal(self):
+        print("soy game_over")
+        game_over = False
+        while not game_over:
+            for evento in pg.event.get():
+                if evento.type == pg.QUIT:
+                    exit()
+
+                if evento.type == pg.KEYDOWN:
+                    if evento.key == pg.K_y:
+                        game_over = True
+                '''
+                if evento.type == pg.KEYDOWN:
+                    if evento.key == pg.K_y:
+                        game_over = self.escenas.partida.blucle_principal()
+                '''
+            self.pantalla.blit(self.background, (0, 0))
+            self.pantalla.blit(self.texto, ((ANCHO - self.anchoTexto)//2, 650))
 
             pg.display.flip()
 
@@ -80,10 +109,13 @@ class Partida(Escena):
         self.player = Nave(midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
         # ASTEROIDES
-        self.asteroides = pg.sprite.Group()
-        for i in range(random.randrange(15, 30)):
+        self.asteroides = []
+        self.grupo_asteroides = pg.sprite.Group()
+        
+        for i in range(4):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
-            self.asteroides.add(self.asteroide)
+            self.asteroides.append(self.asteroide)
+        #self.grupo_asteroides.add(self.asteroides)
 
         # VIDAS
         self.letras_vidas = "VIDAS"
@@ -92,7 +124,6 @@ class Partida(Escena):
         # PUNTOS
         self.letras_puntos = "PUNTOS"
         self.puntos = 0
-        
 
         # MARCADORES
         self.letrero_vidas = Marcadores(20, 20, "nasalization-rg.otf", 24, (255,255,255))
@@ -101,21 +132,20 @@ class Partida(Escena):
         self.letrero_puntos = Marcadores(ANCHO - 130, 20, "nasalization-rg.otf", 24, (255,255,255))
         self.cuenta_puntos = Marcadores(ANCHO - 180, 20, "nasalization-rg.otf", 24, (255,255,255))
 
-
         # GRUPOS
         self.grupo_player = pg.sprite.Group()
         self.grupo_asteroides = pg.sprite.Group()
         self.grupo_marcadores = pg.sprite.Group()
 
         self.grupo_player.add(self.player)
-        self.grupo_asteroides.add(self.asteroides)
         self.grupo_marcadores.add(self.letrero_vidas, self.cuenta_vidas, self.letrero_puntos, self.cuenta_puntos)
-
+        self.grupo_asteroides.add(self.asteroides)
 
 
     def bucle_principal(self):
         print("soy partida")
         game_over = False
+        self.vidas = 3
         while not game_over:
             dt = self.reloj.tick(FPS) # Reloj General
             for evento in pg.event.get():
@@ -135,10 +165,12 @@ class Partida(Escena):
 
             #COLLIDE
             tocados = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
+            if (tocados):
+                self.vidas -= 1
+            if self.vidas < 1:
+                game_over = True
             print(tocados)
-            #if tocados:
-                #self.asteroide.image = pg.image.load("resources/images/explosion/explosion16.png")
-                #self.asteroide.kill()
+            
             
 
 

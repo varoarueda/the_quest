@@ -17,6 +17,7 @@ class Nave(Sprite):
 
         self.image = self.imagenes[self.imagen_activa]
         self.rect = self.image.get_rect(**kwargs) # **kwargs permite clave-valor(posicion rect, valor) para posicionar el rect al instanciar Nave
+        #self.vidas = vidas
 
     def update(self, dt):
         if pg.key.get_pressed()[pg.K_UP]:
@@ -37,6 +38,8 @@ class Nave(Sprite):
             self.tiempo_transcurrido = 0
 
             self.image = self.imagenes[self.imagen_activa]
+            
+        
 
 
 class Asteroide(Sprite):
@@ -61,7 +64,7 @@ class Asteroide(Sprite):
         if self.imagen_aleatoria == 7:
             self.image = pg.image.load(f"resources/images/{self.disfraces[7]}")
         self.rect = self.image.get_rect(**kwargs)
-        self.velocidad_x = random.randrange(1, 5)
+        self.velocidad_x = random.randrange(5, 7)
 
 
     def update(self, dt):
@@ -70,6 +73,7 @@ class Asteroide(Sprite):
         if self.rect.right < 0:
             self.rect.center = (random.randrange(ANCHO+50, ANCHO+100), random.randrange(40, ALTO-40))
             self.velocidad_x = random.randrange(1, 5)
+
 
 
 class Marcadores(Sprite):
@@ -94,6 +98,8 @@ class Marcadores(Sprite):
     @texto.setter
     def texto(self, valor):
         self._texto = str(valor)
+
+        
 
 
 
