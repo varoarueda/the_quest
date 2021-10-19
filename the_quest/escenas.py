@@ -106,7 +106,7 @@ class Partida(Escena):
         self.x = 0 # Para animar background
 
         # NAVE
-        self.player = Nave(midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
+        self.player = Nave(True, midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
         # ASTEROIDES
         self.asteroides = []
@@ -123,7 +123,7 @@ class Partida(Escena):
         
         # PUNTOS
         self.letras_puntos = "PUNTOS"
-        self.puntos = 0
+        #self.puntos = 0
 
         # MARCADORES
         self.letrero_vidas = Marcadores(20, 20, "nasalization-rg.otf", 24, (255,255,255))
@@ -142,8 +142,8 @@ class Partida(Escena):
         self.grupo_asteroides.add(self.asteroides)
 
     def reset(self):
-        #contador = []
-        #self.puntos = 0
+        self.player.estado = True
+        self.puntos = 0
         self.vidas = 3
         self.grupo_asteroides.empty()
         self.asteroides = []
@@ -183,14 +183,16 @@ class Partida(Escena):
             colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
             if colision:
                 self.vidas -= 1
+                self.player.estado = False
+                self.player.explota(dt)
+            
+
+
+            
+            # EXPLOSION NAVE
 
 
             # PUNTUACION
-            #contador = 0
-            #if self.asteroide.rect.right < 8:
-                #self.puntos += 1
-            #print(self.asteroide.rect.right)
-            #print("puntos =", self.puntos)
             for self.asteroide in self.grupo_asteroides:
                 if self.asteroide.rect.right < 8:
                     self.puntos += 1
@@ -213,7 +215,9 @@ class Partida(Escena):
             self.grupo_asteroides.draw(self.pantalla)
             self.grupo_marcadores.draw(self.pantalla)
 
-            print(self.grupo_asteroides)
+            print("colision = ", colision)
+            print(self.player.estado)
+            
 
             pg.display.flip()
 

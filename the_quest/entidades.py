@@ -5,7 +5,7 @@ import random
 
 class Nave(Sprite):
     disfraces = ["nave1.png", "nave2.png", "nave3.png", "nave4.png", "nave5.png"]
-    def __init__(self, **kwargs): # **kwargs = Al instanciar, hay que meterle los pares clave/valor que me interesen = posicionamiento (x,y)
+    def __init__(self, estado, **kwargs): # **kwargs = Al instanciar, hay que meterle los pares clave/valor que me interesen = posicionamiento (x,y)
         super().__init__()
         self.imagenes = [] # Imagen animada
         for fichero in self.disfraces:
@@ -17,7 +17,7 @@ class Nave(Sprite):
 
         self.image = self.imagenes[self.imagen_activa]
         self.rect = self.image.get_rect(**kwargs) # **kwargs permite clave-valor(posicion rect, valor) para posicionar el rect al instanciar Nave
-        #self.viva = False
+        self.estado = estado
 
     def update(self, dt):
         if pg.key.get_pressed()[pg.K_UP]:
@@ -39,9 +39,20 @@ class Nave(Sprite):
 
             self.image = self.imagenes[self.imagen_activa]
 
-        
-            
-        
+
+    
+    def explota(self, dt):
+        animacion = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png", "explosion08.png"]
+        self.imagenes = []
+        for fichero in animacion:
+            self.imagenes.append(pg.image.load(f"resources/images/explosion/{fichero}"))
+        self.imagen_activa = 0
+        self.image = self.imagenes[self.imagen_activa]
+        self.image = pg.transform.scale(self.image, (250, 250))
+
+
+
+
 
 
 class Asteroide(Sprite):
@@ -67,7 +78,7 @@ class Asteroide(Sprite):
             self.image = pg.image.load(f"resources/images/{self.disfraces[7]}")
         self.rect = self.image.get_rect(**kwargs)
         self.velocidad_x = random.randrange(5, 8)
-        self.puntos = 0
+        
     
 
 
