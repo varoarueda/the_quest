@@ -198,7 +198,8 @@ class Partida(Escena):
                 print("estado nave 2 = ", self.player.estado)
             
             if self.player.estado == False:
-                self.player.kill()
+                #self.player.kill()
+                self.grupo_player.remove(self.player)
 
             # EXPLOSION
             if self.player.estado == True:
@@ -209,11 +210,11 @@ class Partida(Escena):
                 self.explosion.rect.center = coordenada_y_explosion
 
 
-
             # PUNTUACION
             for self.asteroide in self.grupo_asteroides:
-                if self.asteroide.rect.right < 8:
-                    self.puntos += 1
+                if self.player.estado == True:
+                    if self.asteroide.rect.right < 8:
+                        self.puntos += 1
             
             
             # RENDERIZADO

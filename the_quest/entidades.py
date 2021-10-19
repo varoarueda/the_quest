@@ -40,7 +40,7 @@ class Nave(Sprite):
             self.image = self.imagenes[self.imagen_activa]
 
         return self.rect.center
-
+    '''
     def explota(self, dt):
         animacion = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png", "explosion08.png"]
         self.imagenes = []
@@ -59,7 +59,7 @@ class Nave(Sprite):
             self.imagenes.append(pg.image.load(f"resources/images/{fichero}"))
         self.imagen_activa = 0
         self.image = self.imagenes[self.imagen_activa]
-        
+    ''' 
 
 
 class Explosion(Sprite):
@@ -90,12 +90,6 @@ class Explosion(Sprite):
             self.tiempo_transcurrido = 0
 
             self.image = self.imagenes[self.imagen_activa]
-
-
-
-
-
-
 
 
 
@@ -161,7 +155,7 @@ class Marcadores(Sprite):
     def texto(self, valor):
         self._texto = str(valor)
 
-        
+
 
 
 
