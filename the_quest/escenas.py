@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
 from . import FPS, ANCHO, ALTO, game
-from .entidades import Nave, Asteroide, Marcadores
+from .entidades import Nave, Asteroide, Marcadores, Explosion
 import random
 
 class Escena():
@@ -108,6 +108,9 @@ class Partida(Escena):
         # NAVE
         self.player = Nave(True, midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
+        # EXPLOSION
+        self.explosion = Explosion(0, 0, False)
+
         # ASTEROIDES
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
@@ -136,10 +139,12 @@ class Partida(Escena):
         self.grupo_player = pg.sprite.Group()
         self.grupo_asteroides = pg.sprite.Group()
         self.grupo_marcadores = pg.sprite.Group()
+        self.grupo_explosion = pg.sprite.Group()
 
         self.grupo_player.add(self.player)
         self.grupo_marcadores.add(self.letrero_vidas, self.cuenta_vidas, self.letrero_puntos, self.cuenta_puntos)
         self.grupo_asteroides.add(self.asteroides)
+        self.grupo_explosion.add(self.explosion)
 
     def reset(self):
         self.player.estado = True
@@ -162,6 +167,8 @@ class Partida(Escena):
         print("soy partida")
         self.reset()
         while self.vidas > 0:
+            print("Pasa por aqui 1")
+            print("Estado nave 1 =", self.player.estado)
             dt = self.reloj.tick(FPS) # Reloj General
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
@@ -178,18 +185,29 @@ class Partida(Escena):
             self.grupo_player.update(dt)
             self.grupo_asteroides.update(dt)
             self.grupo_marcadores.update(dt)
+            self.grupo_explosion.update(dt)
 
-            #COLLIDE
+            #COLISION
             colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
+            print("colision = ", colision)
             if colision:
                 self.vidas -= 1
+                #self.player.explota(dt)
                 self.player.estado = False
-                self.player.explota(dt)
+                print("Pasa por aqui 2")
+                print("estado nave 2 = ", self.player.estado)
             
+            if self.player.estado == False:
+                self.player.kill()
 
+            # EXPLOSION
+            if self.player.estado == True:
+                self.grupo_explosion.remove(self.explosion)
+            else:
+                self.grupo_explosion.add(self.explosion)
+                coordenada_y_explosion = (self.player.rect.center)
+                self.explosion.rect.center = coordenada_y_explosion
 
-            
-            # EXPLOSION NAVE
 
 
             # PUNTUACION
@@ -198,8 +216,6 @@ class Partida(Escena):
                     self.puntos += 1
             
             
-
-
             # RENDERIZADO
             x_relativa = self.x % self.background.get_rect().width
             self.pantalla.blit(self.background, (x_relativa - self.background.get_rect().width , 0))
@@ -214,13 +230,12 @@ class Partida(Escena):
             self.grupo_player.draw(self.pantalla)
             self.grupo_asteroides.draw(self.pantalla)
             self.grupo_marcadores.draw(self.pantalla)
-
-            print("colision = ", colision)
-            print(self.player.estado)
+            self.grupo_explosion.draw(self.pantalla)
+            
             
 
-            pg.display.flip()
 
+            pg.display.flip()
 
 
 

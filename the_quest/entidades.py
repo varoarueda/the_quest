@@ -39,8 +39,8 @@ class Nave(Sprite):
 
             self.image = self.imagenes[self.imagen_activa]
 
+        return self.rect.center
 
-    
     def explota(self, dt):
         animacion = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png", "explosion08.png"]
         self.imagenes = []
@@ -48,7 +48,53 @@ class Nave(Sprite):
             self.imagenes.append(pg.image.load(f"resources/images/explosion/{fichero}"))
         self.imagen_activa = 0
         self.image = self.imagenes[self.imagen_activa]
-        self.image = pg.transform.scale(self.image, (250, 250))
+
+    def reset_estado(self, dt):
+        self.estado = True
+
+    def reset_nave(self, dt):
+        disfraces = ["nave1.png", "nave2.png", "nave3.png", "nave4.png", "nave5.png"]
+        self.imagenes = []
+        for fichero in disfraces:
+            self.imagenes.append(pg.image.load(f"resources/images/{fichero}"))
+        self.imagen_activa = 0
+        self.image = self.imagenes[self.imagen_activa]
+        
+
+
+class Explosion(Sprite):
+    disfraces = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png","explosion08.png"]
+    def __init__(self, x, y, estado):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.imagenes = []
+        for fichero in self.disfraces:
+            self.imagenes.append(pg.image.load(f"resources/images/explosion/{fichero}"))
+        
+        self.imagen_activa = 0
+        self.tiempo_transcurrido = 0
+        self.tiempo_cambio_animacion = 1000 // FPS * 8 # Multiplicador velocidad animación
+
+        self.image = self.imagenes[self.imagen_activa]
+        self.rect = self.image.get_rect(x=self.x, y=self.y)
+
+        self.estado = False
+
+    def update(self, dt):
+        self.tiempo_transcurrido += dt
+        if self.tiempo_transcurrido >= self.tiempo_cambio_animacion:
+            self.imagen_activa += 1
+            if self.imagen_activa >= len(self.imagenes):
+                self.imagen_activa = 0
+            self.tiempo_transcurrido = 0
+
+            self.image = self.imagenes[self.imagen_activa]
+
+
+
+
+
 
 
 
