@@ -101,21 +101,21 @@ class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
 
-        # FONDO
+        # FONDO ------------------------------------------------------------------------------------------------------------
         self.background = pg.image.load("resources/images/bg_partida2.jpg").convert()
         self.x = 0 # Para animar background
 
-        # NAVE
+        # NAVE ------------------------------------------------------------------------------------------------------------
         self.player = Nave(True, midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
-        #PLANETA
+        #PLANETA ------------------------------------------------------------------------------------------------------------
         self.planeta = Planeta(midleft=(ANCHO-20, ALTO//2))
 
 
-        # EXPLOSION
+        # EXPLOSION ------------------------------------------------------------------------------------------------------------
         self.explosion = Explosion(0, 0, False, 0)
 
-        # ASTEROIDES
+        # ASTEROIDES ------------------------------------------------------------------------------------------------------------
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
         
@@ -123,18 +123,18 @@ class Partida(Escena):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
             self.asteroides.append(self.asteroide)
 
-        # VIDAS
+        # VIDAS ------------------------------------------------------------------------------------------------------------
         self.letras_vidas = "VIDAS"
         #self.vidas = 3
         
-        # PUNTOS
+        # PUNTOS ------------------------------------------------------------------------------------------------------------
         self.letras_puntos = "PUNTOS"
         #self.puntos = 0
 
-        # NIVEL
+        # NIVEL ------------------------------------------------------------------------------------------------------------
         self.letras_nivel = "NIVEL"
 
-        # MARCADORES
+        # MARCADORES ------------------------------------------------------------------------------------------------------------
         self.letrero_vidas = Marcadores(20, 20, "nasalization-rg.otf", 24, (255,255,255))
         self.cuenta_vidas = Marcadores(120, 20, "nasalization-rg.otf", 24, (255,255,255))
 
@@ -144,7 +144,7 @@ class Partida(Escena):
         self.letrero_nivel =  Marcadores(ANCHO //2 - 65, 20, "nasalization-rg.otf", 24, (255,255,255))
         self.cuenta_nivel = Marcadores(ANCHO // 2 + 25, 20, "nasalization-rg.otf", 24, (255,255,255))
 
-        # GRUPOS
+        # GRUPOS ------------------------------------------------------------------------------------------------------------
         self.grupo_player = pg.sprite.Group()
         self.grupo_asteroides = pg.sprite.Group()
         self.grupo_marcadores = pg.sprite.Group()
@@ -196,21 +196,24 @@ class Partida(Escena):
             self.letrero_nivel.texto = self.letras_nivel
             self.cuenta_nivel.texto = self.nivel
             
-            # GESTION NIVELES
+            # GESTION NIVELES ------------------------------------------------------------------------------------------------------------
             if self.puntos < 25:
                 self.nivel = 0
             if self.puntos >= 25:
                 self.nivel = 1
             
 
-            # UPDATES
+            # UPDATES ------------------------------------------------------------------------------------------------------------
             self.grupo_player.update(dt)
             self.grupo_asteroides.update(dt)
             self.grupo_marcadores.update(dt)
             self.grupo_explosion.update(dt)
             #self.grupo_planeta.update(dt)
 
-            #COLISION
+            print("posicion nave =" , self.player.rect.center)
+
+
+            #COLISION ------------------------------------------------------------------------------------------------------------
             colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
             print("colision = ", colision)
             if colision:
@@ -221,7 +224,7 @@ class Partida(Escena):
                 #self.player.kill()
                 self.grupo_player.remove(self.player)
 
-            # EXPLOSION
+            # EXPLOSION ------------------------------------------------------------------------------------------------------------
             if self.player.estado == True:
                 self.grupo_player.add(self.player)
                 self.grupo_explosion.remove(self.explosion)
@@ -237,7 +240,7 @@ class Partida(Escena):
                 self.grupo_explosion.remove(self.explosion)
 
 
-            # RESETEAR NAVE
+            # RESETEAR NAVE ------------------------------------------------------------------------------------------------------------
             if self.player.estado == False and self.explosion.contador >= 60:
                 self.player.reset_nave(dt)
                 self.grupo_player.add(self.player)
@@ -246,15 +249,24 @@ class Partida(Escena):
                 self.explosion.contador = 0
 
 
-            # PUNTUACION
+            # PUNTUACION ------------------------------------------------------------------------------------------------------------
             for self.asteroide in self.grupo_asteroides:
                 if self.player.estado == True:
                     if self.asteroide.rect.right < 8:
                         self.puntos += 1
             
-            # ANIMACION CAMBIO NIVEL
+            # ANIMACION CAMBIO NIVEL ------------------------------------------------------------------------------------------------------------
             if self.nivel == 1:
                 self.grupo_planeta.update(dt)
+            if self.planeta.rect.midleft == (ANCHO//2, ALTO//2):
+                self.grupo_asteroides.remove(self.asteroide)
+                #self.player.regresa_centro(dt)
+                self.player.cambio_nivel(dt)
+
+
+
+
+
 
 
 
@@ -262,7 +274,7 @@ class Partida(Escena):
             print("estado explosion =", self.explosion.estado)
             print("contador =" ,self.explosion.contador)
             
-            # RENDERIZADO
+            # RENDERIZADO ------------------------------------------------------------------------------------------------------------
             x_relativa = self.x % self.background.get_rect().width
             self.pantalla.blit(self.background, (x_relativa - self.background.get_rect().width , 0))
             if x_relativa < ANCHO:
@@ -274,12 +286,11 @@ class Partida(Escena):
             #for asteroide in self.asteroides:
                 #self.pantalla.blit(asteroide.image, asteroide.rect)
 
-            self.grupo_player.draw(self.pantalla)
             self.grupo_asteroides.draw(self.pantalla)
             self.grupo_marcadores.draw(self.pantalla)
             self.grupo_explosion.draw(self.pantalla)
             self.grupo_planeta.draw(self.pantalla)
-
+            self.grupo_player.draw(self.pantalla)
 
 
             pg.display.flip()

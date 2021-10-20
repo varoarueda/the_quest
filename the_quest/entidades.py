@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame import surface
 from pygame.sprite import Sprite
 from . import ALTO, ANCHO, FPS
 import random
@@ -18,6 +19,8 @@ class Nave(Sprite):
         self.image = self.imagenes[self.imagen_activa]
         self.rect = self.image.get_rect(**kwargs) # **kwargs permite clave-valor(posicion rect, valor) para posicionar el rect al instanciar Nave
         self.estado = estado
+        self.velocidad_x = 5
+        self.velocidad_y = 5
 
     def update(self, dt):
         if pg.key.get_pressed()[pg.K_UP]:
@@ -36,7 +39,6 @@ class Nave(Sprite):
             if self.imagen_activa >= len(self.imagenes):
                 self.imagen_activa = 0
             self.tiempo_transcurrido = 0
-
             self.image = self.imagenes[self.imagen_activa]
 
         return self.rect.center
@@ -48,7 +50,25 @@ class Nave(Sprite):
             self.imagenes.append(pg.image.load(f"resources/images/{fichero}"))
         self.imagen_activa = 0
         self.image = self.imagenes[self.imagen_activa]
-    
+    '''
+    def regresa_centro(self,dt):
+        if self.rect.center <= (87, 400):
+            self.rect.y += self.velocidad_y
+            self.rect.center = (87, 400)
+        if self.rect.center >= (87, 400):
+            self.rect.y -= self.velocidad_y
+            self.rect.center = (87, 400)
+    '''
+
+    def cambio_nivel(self,dt):
+        self.rect.x += self.velocidad_x
+        if self.rect.center >= (ANCHO-300, ALTO//2):
+            self.rect.center = (ANCHO-300, ALTO//2)
+            self.image = pg.transform.rotate(self.image, 90)
+            self.image_rotada = self.image.get_rect()
+            
+
+
 
 
 class Explosion(Sprite):
@@ -119,7 +139,7 @@ class Asteroide(Sprite):
 class Planeta(Sprite):
     def __init__(self, **kwargs):
         super().__init__()
-        self.image = pg.image.load("resources/images/planeta.png")
+        self.image = pg.image.load("resources/images/planeta.png").convert_alpha()
         self.rect = self.image.get_rect(**kwargs)
         self.velocidad_x = 5
 
