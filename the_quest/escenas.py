@@ -168,6 +168,7 @@ class Partida(Escena):
         self.grupo_asteroides.empty()
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
+        self.planeta.reset(self)
         
         for i in range(8):
             self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
@@ -196,9 +197,9 @@ class Partida(Escena):
             self.cuenta_nivel.texto = self.nivel
             
             # GESTION NIVELES
-            if self.puntos < 20:
+            if self.puntos < 25:
                 self.nivel = 0
-            if self.puntos >= 20:
+            if self.puntos >= 25:
                 self.nivel = 1
             
 
@@ -231,13 +232,13 @@ class Partida(Escena):
                 self.explosion.rect.center = posicion_y_explosion
                 self.explosion.contador += 1
 
-            if self.explosion.contador >= 240:
+            if self.explosion.contador >= 60:
                 self.explosion.estado = False
                 self.grupo_explosion.remove(self.explosion)
 
 
             # RESETEAR NAVE
-            if self.player.estado == False and self.explosion.contador >= 239:
+            if self.player.estado == False and self.explosion.contador >= 60:
                 self.player.reset_nave(dt)
                 self.grupo_player.add(self.player)
                 self.player.estado = True
@@ -254,7 +255,6 @@ class Partida(Escena):
             # ANIMACION CAMBIO NIVEL
             if self.nivel == 1:
                 self.grupo_planeta.update(dt)
-
 
 
 

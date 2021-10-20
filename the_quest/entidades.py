@@ -128,6 +128,12 @@ class Planeta(Sprite):
         if self.rect.midleft <= (ANCHO//2 , ALTO//2):
             self.rect.midleft = (ANCHO//2, ALTO//2)
 
+    def reset(self,dt):
+        self.rect.midleft=(ANCHO-20, ALTO//2)
+        self.rect.x -= self.velocidad_x
+        if self.rect.midleft <= (ANCHO//2 , ALTO//2):
+            self.rect.midleft = (ANCHO//2, ALTO//2)
+
 
 
 
