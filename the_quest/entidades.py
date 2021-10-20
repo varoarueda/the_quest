@@ -40,17 +40,6 @@ class Nave(Sprite):
             self.image = self.imagenes[self.imagen_activa]
 
         return self.rect.center
-    '''
-    def explota(self, dt):
-        animacion = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png", "explosion08.png"]
-        self.imagenes = []
-        for fichero in animacion:
-            self.imagenes.append(pg.image.load(f"resources/images/explosion/{fichero}"))
-        self.imagen_activa = 0
-        self.image = self.imagenes[self.imagen_activa]
-
-    def reset_estado(self, dt):
-        self.estado = True
 
     def reset_nave(self, dt):
         disfraces = ["nave1.png", "nave2.png", "nave3.png", "nave4.png", "nave5.png"]
@@ -59,12 +48,12 @@ class Nave(Sprite):
             self.imagenes.append(pg.image.load(f"resources/images/{fichero}"))
         self.imagen_activa = 0
         self.image = self.imagenes[self.imagen_activa]
-    ''' 
+    
 
 
 class Explosion(Sprite):
     disfraces = ["explosion01.png", "explosion02.png", "explosion03.png", "explosion04.png", "explosion05.png", "explosion06.png", "explosion07.png","explosion08.png"]
-    def __init__(self, x, y, estado):
+    def __init__(self, x, y, estado, contador):
         super().__init__()
         self.x = x
         self.y = y
@@ -74,12 +63,14 @@ class Explosion(Sprite):
         
         self.imagen_activa = 0
         self.tiempo_transcurrido = 0
-        self.tiempo_cambio_animacion = 1000 // FPS * 8 # Multiplicador velocidad animación
+        self.tiempo_cambio_animacion = 1000 // FPS * 10 # Multiplicador velocidad animación
 
         self.image = self.imagenes[self.imagen_activa]
         self.rect = self.image.get_rect(x=self.x, y=self.y)
 
         self.estado = False
+        self.contador = 0
+
 
     def update(self, dt):
         self.tiempo_transcurrido += dt
@@ -88,12 +79,8 @@ class Explosion(Sprite):
             if self.imagen_activa >= len(self.imagenes):
                 self.imagen_activa = 0
             self.tiempo_transcurrido = 0
-
             self.image = self.imagenes[self.imagen_activa]
-
-
-
-
+            
 
 class Asteroide(Sprite):
     disfraces = ["asteroide1.png", "asteroide2.png", "asteroide3.png", "asteroide4.png", "asteroide5.png", "asteroide6.png", "asteroide7.png", "asteroide8.png"]
@@ -128,6 +115,18 @@ class Asteroide(Sprite):
             self.rect.center = (random.randrange(ANCHO+50, ANCHO+100), random.randrange(40, ALTO-40))
             self.velocidad_x = random.randrange(7, 9)
 
+
+class Planeta(Sprite):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.image = pg.image.load("resources/images/planeta.png")
+        self.rect = self.image.get_rect(**kwargs)
+        self.velocidad_x = 5
+
+    def update(self, dt):
+        self.rect.x -= self.velocidad_x
+        if self.rect.midleft <= (ANCHO//2 , ALTO//2):
+            self.rect.midleft = (ANCHO//2, ALTO//2)
 
 
 
