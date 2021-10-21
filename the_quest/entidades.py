@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame import surface
 from pygame.sprite import Sprite
-from . import ALTO, ANCHO, FPS
+from . import ALTO, ANCHO, FPS, VELOCIDAD_PLANETA, CENTRO_PANTALLA, VELOCIDAD_NAVE
 import random
 
 class Nave(Sprite):
@@ -19,7 +19,7 @@ class Nave(Sprite):
         self.image = self.imagenes[self.imagen_activa]
         self.rect = self.image.get_rect(**kwargs) # **kwargs permite clave-valor(posicion rect, valor) para posicionar el rect al instanciar Nave
         self.estado = estado
-        self.velocidad_x = 5
+        self.velocidad_x = VELOCIDAD_NAVE
         self.velocidad_y = 5
 
     def update(self, dt):
@@ -50,23 +50,25 @@ class Nave(Sprite):
             self.imagenes.append(pg.image.load(f"resources/images/{fichero}"))
         self.imagen_activa = 0
         self.image = self.imagenes[self.imagen_activa]
-    '''
-    def regresa_centro(self,dt):
-        if self.rect.center <= (87, 400):
-            self.rect.y += self.velocidad_y
-            self.rect.center = (87, 400)
-        if self.rect.center >= (87, 400):
-            self.rect.y -= self.velocidad_y
-            self.rect.center = (87, 400)
-    '''
 
-    def cambio_nivel(self,dt):
-        self.rect.x += self.velocidad_x
+    def aterriza(self, dt):
+        self.rect.x += VELOCIDAD_NAVE
         if self.rect.center >= (ANCHO-300, ALTO//2):
             self.rect.center = (ANCHO-300, ALTO//2)
-            self.image = pg.transform.rotate(self.image, 90)
-            self.image_rotada = self.image.get_rect()
+            #self.image = pg.transform.rotate(self.image, 90)
+            #self.image_rotada = self.image.get_rect()
+            #return self.rect.center
+
+    def posicionate(self, dt):
+        self.rect.x -= VELOCIDAD_NAVE
+        if self.rect.midleft < (ANCHO-1200, ALTO//2):
+            self.rect.midleft = (ANCHO-1200, ALTO//2)
+
+        #if self.rect.center == (ANCHO-300, ALTO//2):
             
+        #if self.rect.center == (ANCHO-300, ALTO//2):
+            #self.rect.midleft = (ANCHO-1200, ALTO//2)
+
 
 
 
@@ -133,24 +135,33 @@ class Asteroide(Sprite):
         self.rect.x -= self.velocidad_x
         if self.rect.right < 0:
             self.rect.center = (random.randrange(ANCHO+50, ANCHO+100), random.randrange(40, ALTO-40))
-            self.velocidad_x = random.randrange(7, 9)
+            self.velocidad_x = random.randrange(4, 6)
 
 
 class Planeta(Sprite):
-    def __init__(self, **kwargs):
+    def __init__(self, estado, contador, **kwargs):
         super().__init__()
         self.image = pg.image.load("resources/images/planeta.png").convert_alpha()
         self.rect = self.image.get_rect(**kwargs)
-        self.velocidad_x = 5
+        self.velocidad_x = VELOCIDAD_PLANETA
+        self.estado = estado
+        self.contador = 0
 
-    def update(self, dt):
-        self.rect.x -= self.velocidad_x
-        if self.rect.midleft <= (ANCHO//2 , ALTO//2):
-            self.rect.midleft = (ANCHO//2, ALTO//2)
+    def muestrate(self, dt):
+        self.rect.x -= VELOCIDAD_PLANETA
+        if self.rect.midleft <= CENTRO_PANTALLA:
+            self.rect.midleft = CENTRO_PANTALLA
+
+    def escondete(self, dt):
+        #self.rect.midleft = CENTRO_PANTALLA
+        self.rect.x += VELOCIDAD_PLANETA
+        if self.rect.midleft <= CENTRO_PANTALLA:
+            self.rect.midleft = (ANCHO + 50, ALTO//2)
+
 
     def reset(self,dt):
         self.rect.midleft=(ANCHO-20, ALTO//2)
-        self.rect.x -= self.velocidad_x
+        self.rect.x -= VELOCIDAD_PLANETA
         if self.rect.midleft <= (ANCHO//2 , ALTO//2):
             self.rect.midleft = (ANCHO//2, ALTO//2)
 

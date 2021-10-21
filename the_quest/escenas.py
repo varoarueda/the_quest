@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
-from . import FPS, ANCHO, ALTO, game
+from . import FPS, ANCHO, ALTO, VELOCIDAD_PLANETA, game, CENTRO_PANTALLA
 from .entidades import Nave, Asteroide, Marcadores, Explosion, Planeta
 import random
 
@@ -109,7 +109,7 @@ class Partida(Escena):
         self.player = Nave(True, midleft=(ANCHO-1200, ALTO//2)) # posicionamiento viene del **kwargs (init clase Nave)
 
         #PLANETA ------------------------------------------------------------------------------------------------------------
-        self.planeta = Planeta(midleft=(ANCHO-20, ALTO//2))
+        self.planeta = Planeta(False, 0,  midleft=(ANCHO-20, ALTO//2))
 
 
         # EXPLOSION ------------------------------------------------------------------------------------------------------------
@@ -162,6 +162,7 @@ class Partida(Escena):
         self.player.estado = True
         self.explosion.estado = False
         self.explosion.contador = 0
+        self.planeta.contador = 0
         self.puntos = 0
         self.vidas = 3
         self.nivel = 0
@@ -182,6 +183,7 @@ class Partida(Escena):
         print("soy partida")
         self.reset()
         while self.vidas > 0:
+            print("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
             dt = self.reloj.tick(FPS) # Reloj General
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
@@ -199,9 +201,12 @@ class Partida(Escena):
             # GESTION NIVELES ------------------------------------------------------------------------------------------------------------
             if self.puntos < 25:
                 self.nivel = 0
-            if self.puntos >= 25:
+            elif self.puntos >= 25:
                 self.nivel = 1
-            
+            elif self.puntos >= 50:
+                self.nivel = 2
+            elif self.nivel >= 75:
+                self.nivel = 3
 
             # UPDATES ------------------------------------------------------------------------------------------------------------
             self.grupo_player.update(dt)
@@ -210,12 +215,8 @@ class Partida(Escena):
             self.grupo_explosion.update(dt)
             #self.grupo_planeta.update(dt)
 
-            print("posicion nave =" , self.player.rect.center)
-
-
             #COLISION ------------------------------------------------------------------------------------------------------------
             colision = pg.sprite.groupcollide(self.grupo_player, self.grupo_asteroides, False, True)
-            print("colision = ", colision)
             if colision:
                 self.vidas -= 1
                 self.player.estado = False
@@ -239,7 +240,6 @@ class Partida(Escena):
                 self.explosion.estado = False
                 self.grupo_explosion.remove(self.explosion)
 
-
             # RESETEAR NAVE ------------------------------------------------------------------------------------------------------------
             if self.player.estado == False and self.explosion.contador >= 60:
                 self.player.reset_nave(dt)
@@ -248,31 +248,38 @@ class Partida(Escena):
                 self.explosion.estado = False
                 self.explosion.contador = 0
 
-
             # PUNTUACION ------------------------------------------------------------------------------------------------------------
             for self.asteroide in self.grupo_asteroides:
                 if self.player.estado == True:
                     if self.asteroide.rect.right < 8:
                         self.puntos += 1
-            
-            # ANIMACION CAMBIO NIVEL ------------------------------------------------------------------------------------------------------------
-            if self.nivel == 1:
-                self.grupo_planeta.update(dt)
-            if self.planeta.rect.midleft == (ANCHO//2, ALTO//2):
+            print("2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222")
+
+            # ANIMACION FIN NIVEL ------------------------------------------------------------------------------------------------------------
+            print("ESTADO PLANETA 3 = ", self.planeta.estado)
+            if self.planeta.contador <240 and self.nivel == 1:
                 self.grupo_asteroides.remove(self.asteroide)
-                #self.player.regresa_centro(dt)
-                self.player.cambio_nivel(dt)
+                self.planeta.muestrate(dt)
+                print("33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333")
+            if self.planeta.rect.midleft == CENTRO_PANTALLA:
+                self.player.aterriza(dt)
+                self.planeta.contador += 1
+
+
+            # ANIMACION NUEVO NIVEL ------------------------------------------------------------------------------------------------------------
+            print("ESTADO PLANETA 4 = ", self.planeta.estado)
+            if self.planeta.contador >= 600:
+                self.planeta.escondete(dt)
+                #self.planeta.estado = False
+                print("44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
+                self.player.posicionate(dt)
+    
+            
 
 
 
 
 
-
-
-
-            print("estado nave =", self.player.estado)
-            print("estado explosion =", self.explosion.estado)
-            print("contador =" ,self.explosion.contador)
             
             # RENDERIZADO ------------------------------------------------------------------------------------------------------------
             x_relativa = self.x % self.background.get_rect().width
@@ -287,15 +294,19 @@ class Partida(Escena):
                 #self.pantalla.blit(asteroide.image, asteroide.rect)
 
             self.grupo_asteroides.draw(self.pantalla)
-            self.grupo_marcadores.draw(self.pantalla)
             self.grupo_explosion.draw(self.pantalla)
             self.grupo_planeta.draw(self.pantalla)
             self.grupo_player.draw(self.pantalla)
+            self.grupo_marcadores.draw(self.pantalla)
 
+
+            print("Contadpr PLANETA = " , self.planeta.contador)
 
             pg.display.flip()
 
 
+
+            
 
 class Records(Escena):
     pass
