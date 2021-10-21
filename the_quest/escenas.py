@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame.constants import KEYDOWN
 from . import FPS, ANCHO, ALTO, VELOCIDAD_PLANETA, game, CENTRO_PANTALLA
-from .entidades import Nave, Asteroide, Marcadores, Explosion, Planeta
+from .entidades import Nave, Asteroide, Marcadores, Marcador_derecha, Explosion, Planeta
 import random
 
 class Escena():
@@ -139,7 +139,7 @@ class Partida(Escena):
         self.cuenta_vidas = Marcadores(120, 20, "nasalization-rg.otf", 24, (255,255,255))
 
         self.letrero_puntos = Marcadores(ANCHO - 130, 20, "nasalization-rg.otf", 24, (255,255,255))
-        self.cuenta_puntos = Marcadores(ANCHO - 180, 20, "nasalization-rg.otf", 24, (255,255,255))
+        self.cuenta_puntos = Marcador_derecha(ANCHO - 140, 20, "nasalization-rg.otf", 24, (255,255,255))
 
         self.letrero_nivel =  Marcadores(ANCHO //2 - 65, 20, "nasalization-rg.otf", 24, (255,255,255))
         self.cuenta_nivel = Marcadores(ANCHO // 2 + 25, 20, "nasalization-rg.otf", 24, (255,255,255))
@@ -272,8 +272,6 @@ class Partida(Escena):
                 print("44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
                 self.planeta.escondete(dt)
                 self.player.posicionate(dt)
-                
-     
 
 
 

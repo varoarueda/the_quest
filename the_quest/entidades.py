@@ -3,6 +3,7 @@ from pygame import surface
 from pygame.sprite import Sprite
 from . import ALTO, ANCHO, FPS, VELOCIDAD_PLANETA, CENTRO_PANTALLA, VELOCIDAD_NAVE
 import random
+from enum import Enum
 
 class Nave(Sprite):
     disfraces = ["nave1.png", "nave2.png", "nave3.png", "nave4.png", "nave5.png"]
@@ -57,7 +58,7 @@ class Nave(Sprite):
             self.rect.center = (ANCHO-300, ALTO//2)
             #self.image = pg.transform.rotate(self.image, 90)
             #self.image_rotada = self.image.get_rect()
-            #return self.rect.center
+
 
     def posicionate(self, dt):
         self.rect.x -= VELOCIDAD_NAVE
@@ -190,6 +191,11 @@ class Marcadores(Sprite):
     def texto(self, valor):
         self._texto = str(valor)
 
+
+class Marcador_derecha(Marcadores):
+    def update(self, dt):
+        super().update(dt)
+        self.rect = self.image.get_rect(right = self.x, y=self.y)
 
 
 
