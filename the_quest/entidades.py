@@ -61,15 +61,14 @@ class Nave(Sprite):
 
     def posicionate(self, dt):
         self.rect.x -= VELOCIDAD_NAVE
-        if self.rect.midleft < (ANCHO-1200, ALTO//2):
-            self.rect.midleft = (ANCHO-1200, ALTO//2)
+        if self.rect.midleft < (0, ALTO):
+            self.rect.midleft = (0, ALTO//2)
 
-        #if self.rect.center == (ANCHO-300, ALTO//2):
+            if pg.key.get_pressed()[pg.K_UP]:
+                self.rect.y -= 5
+            if pg.key.get_pressed()[pg.K_DOWN]:
+                self.rect.y += 5
             
-        #if self.rect.center == (ANCHO-300, ALTO//2):
-            #self.rect.midleft = (ANCHO-1200, ALTO//2)
-
-
 
 
 

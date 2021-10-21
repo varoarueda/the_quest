@@ -201,11 +201,11 @@ class Partida(Escena):
             # GESTION NIVELES ------------------------------------------------------------------------------------------------------------
             if self.puntos < 25:
                 self.nivel = 0
-            elif self.puntos >= 25:
+            if self.puntos >= 25:
                 self.nivel = 1
-            elif self.puntos >= 50:
+            if self.puntos >= 50:
                 self.nivel = 2
-            elif self.nivel >= 75:
+            if self.puntos >= 75:
                 self.nivel = 3
 
             # UPDATES ------------------------------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ class Partida(Escena):
                 self.explosion.rect.center = posicion_y_explosion
                 self.explosion.contador += 1
 
-            if self.explosion.contador >= 60:
+            if self.explosion.contador >= 80:
                 self.explosion.estado = False
                 self.grupo_explosion.remove(self.explosion)
 
@@ -257,8 +257,8 @@ class Partida(Escena):
 
             # ANIMACION FIN NIVEL ------------------------------------------------------------------------------------------------------------
             print("ESTADO PLANETA 3 = ", self.planeta.estado)
-            if self.planeta.contador <240 and self.nivel == 1:
-                self.grupo_asteroides.remove(self.asteroide)
+            if self.nivel != 0 and self.planeta.contador < 60:
+                self.grupo_asteroides.remove(self.asteroides)
                 self.planeta.muestrate(dt)
                 print("33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333")
             if self.planeta.rect.midleft == CENTRO_PANTALLA:
@@ -269,12 +269,15 @@ class Partida(Escena):
             # ANIMACION NUEVO NIVEL ------------------------------------------------------------------------------------------------------------
             print("ESTADO PLANETA 4 = ", self.planeta.estado)
             if self.planeta.contador >= 600:
-                self.planeta.escondete(dt)
-                #self.planeta.estado = False
                 print("44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
+                self.planeta.escondete(dt)
                 self.player.posicionate(dt)
-    
-            
+                
+     
+
+
+
+
 
 
 
