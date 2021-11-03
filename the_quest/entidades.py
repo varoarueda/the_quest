@@ -134,7 +134,6 @@ class Nave(Sprite):
         image = pg.transform.rotate(self.image, self.rotate)
         image = pg.transform.flip(image, self.flip_x, self.flip_y)
         image = pg.transform.scale(image, (self.rect.w , self.rect.h))
-        #image.set.colorkey(False)
         pantalla.blit(image, self.rect)
 
 
@@ -162,11 +161,7 @@ class Explosion(Sprite):
 
         self.estado = EstadoExplosion.OFF
         self.contador = 0
-        self.colision = True
-
-        # self.sonido = pg.mixer.music.load("resources/sonidos/explosion.ogg")
-        
-
+        self.colision = True        
 
     def update(self, dt):
         if self.estado == EstadoExplosion.ON:
@@ -267,7 +262,6 @@ class Planeta(Sprite):
 
 
     def draw(self, pantalla):
-        #image = pg.transform.rotate(self.image, self.rotate)
         pantalla.blit(self.image, self.rect)
 
 
@@ -305,23 +299,6 @@ class Marcador_derecha(Marcadores):
         self.rect = self.image.get_rect(right = self.x, y=self.y)
 
 
-# class Sonido():
-#     def __init__(self):
-#         sonido = pg.mixer.music.load("resources/sonidos/musica_juego.ogg")
-#         pg.mixer.music.set_volume(0.1)
-
-#     def play(self):
-#         pg.mixer.music.play(-1)
-
-
-
-# class Sonido2():
-#     def __init__(self):
-#         self.sonido = pg.mixer.Sound("resources/sonidos/explosion.ogg")
-#         self.sonido.set_volume(0.3)
-
-#     def play(self):
-#         pg.mixer.Sound.play(self.sonido)
 
 
 
