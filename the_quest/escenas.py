@@ -195,7 +195,7 @@ class Partida(Escena):
         #PLANETA --------------------------------------------------------------------------------------------------------------
         self.lista_planetas = []
         for disfraz in range(4):
-            self.lista_planetas.append(Planeta(EstadoPlaneta.ESCONDETE, disfraz + 1, midleft=(ANCHO-20, ALTO//2)))
+            self.lista_planetas.append(Planeta(EstadoPlaneta.ESCONDETE, disfraz +1, midleft=(ANCHO-20, ALTO//2)))
 
         # EXPLOSION ------------------------------------------------------------------------------------------------------------
         self.explosion = Explosion(0, 0, EstadoExplosion.OFF, 0)
@@ -252,14 +252,21 @@ class Partida(Escena):
 
 
     def paso_nivel(self, nivel):
-        self.lista_planetas[nivel -1].reset()
+        self.lista_planetas[nivel].reset()
         
         self.grupo_asteroides.empty()
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
-        for i in range(nivel * 20 // 2):
-            self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500*self.nivel) , random.randrange(40, ALTO-40)))
-            self.asteroides.append(self.asteroide)
+
+        if nivel == 0:
+            for i in range(10):
+                self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500) , random.randrange(40, ALTO-40)))
+                self.asteroides.append(self.asteroide)
+        else:
+            for i in range(nivel * 20 // 2):
+                self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500*self.nivel) , random.randrange(40, ALTO-40)))
+                self.asteroides.append(self.asteroide)
+
         self.grupo_asteroides.add(self.asteroides)
 
 
@@ -348,7 +355,7 @@ class Partida(Escena):
                     self.lista_planetas[self.nivel].estado = EstadoPlaneta.ESCONDETE
                     self.player.estado = EstadoPlayer.DESPEGANDO
 
-            if self.nivel == 4 and self.cuenta_atras == 0:
+            if self.nivel == 3 and self.cuenta_atras == 0:
                 # self.explosion.estado = EstadoExplosion.OFF
                 self.player.estado = EstadoPlayer.ATERRIZANDO
                 self.lista_planetas[self.nivel].estado = EstadoPlaneta.FIN
