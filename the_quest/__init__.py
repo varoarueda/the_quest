@@ -10,14 +10,12 @@ VELOCIDAD_NAVE = 5
 ALTO_NAVE = 77
 ANCHO_NAVE = 174
 
-NIVEL = 0
+NIVEL = 3
 
 TIEMPO_DURACION_NIVEL = 5
 
 LIMITE_TIEMPO_ANIMACION_CAMBIO_NIVEL = 1850
 DURACION_EXPLOSION = 60
-
-
 
 def musica(cancion):
     LISTA_MUSICA = ['musica_juego'] * 6
@@ -28,6 +26,8 @@ def sonido(fx):
     LISTA_SONIDOS = ['explosion']
     if fx in LISTA_SONIDOS:
         return f"resources/sonidos/{fx}.ogg"
+
+
 
 
 

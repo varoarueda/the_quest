@@ -14,12 +14,14 @@ class Game():
     def launch(self):
         i = ESCENA
         si_pierdes = 1
+        usuario = ''
         self.carga_musica(0)
         while True:
-            si_pierdes = self.escenas[i].bucle_principal(si_pierdes)
-            i += si_pierdes
+            si_pierdes = self.escenas[i].bucle_principal(si_pierdes, usuario)
+            i += si_pierdes[0]
             if i >= len(self.escenas):
                 i = 0
+            print("usuarioooooooooo =", si_pierdes[1])
     
 
     def carga_musica(self, indice):

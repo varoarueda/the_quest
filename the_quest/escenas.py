@@ -22,7 +22,7 @@ class Portada(Escena):
         self.callToAction = fuente.render("Pulsa <SCP> para CONTINUAR", True, (255, 255, 255))
         self.anchoTexto = self.callToAction.get_width()
 
-    def bucle_principal(self, si_pierdes):
+    def bucle_principal(self, si_pierdes, usuario):
         print("soy portada")
         si_pierdes = 1
         game_over = False
@@ -45,7 +45,7 @@ class Portada(Escena):
 
             pg.display.flip()
 
-        return si_pierdes
+        return si_pierdes, usuario
 
 class Game_over(Escena):
     def __init__(self, pantalla):
@@ -55,8 +55,9 @@ class Game_over(Escena):
         self.texto = fuente.render("Pulsa <SPC> para JUGAR otra vez", True, (255, 255, 255))
         self.anchoTexto = self.texto.get_width()
 
-    def bucle_principal(self, si_pierdes):
+    def bucle_principal(self, si_pierdes, usuario):
         print("soy game_over")
+        si_pierdes = 1
         game_over = False
         while not game_over:
             for evento in pg.event.get():
@@ -66,8 +67,6 @@ class Game_over(Escena):
                 if evento.type == pg.KEYDOWN:
                     if evento.key == pg.K_SPACE:
                         game_over = True
-                    # if evento.key == pg.K_ESCAPE:
-                    #     game_over = True
                         
 
             self.pantalla.blit(self.background, (0, 0))
@@ -75,7 +74,7 @@ class Game_over(Escena):
 
             pg.display.flip()
 
-        return si_pierdes
+        return si_pierdes, usuario
 
 
 
@@ -87,8 +86,9 @@ class Instrucciones(Escena):
         self.texto = fuente.render("Pulsa <SCP> para CONTINUAR", True, (255, 255, 255))
         self.anchoTexto = self.texto.get_width()
 
-    def bucle_principal(self, si_pierdes):
+    def bucle_principal(self, si_pierdes, usuario):
         print("soy instrucciones")
+        si_pierdes = 1
         game_over = False
         while not game_over:
             for evento in pg.event.get():
@@ -102,13 +102,12 @@ class Instrucciones(Escena):
                         game_over = True
 
 
-
             self.pantalla.blit(self.background, (0, 0))
             self.pantalla.blit(self.texto, ((ANCHO-self.anchoTexto)//2 , 550))
 
             pg.display.flip()
 
-        return si_pierdes
+        return si_pierdes, usuario
 
 class Usuario(Escena):
     def __init__(self, pantalla):
@@ -123,17 +122,12 @@ class Usuario(Escena):
         self.texto2 = fuente2.render("Pulsa <SPC> para empezar la PARTIDA", True, (255, 255, 255))
         self.anchoTexto2 = self.texto2.get_width()
 
-        #usuario = ''
         self.fuente_usuario = pg.font.Font("resources/fonts/nasalization-rg.otf", 90)
-        #self.texto_usuario = self.fuente_usuario.render(usuario, True, (255, 255, 255))
-        #self.anchoTexto_usuario = self.texto_usuario.get_width()
 
 
-    def bucle_principal(self, si_pierdes):
+    def bucle_principal(self, si_pierdes, usuario):
         usuario = ''
-
-        print("soy usuario")
-
+        si_pierdes = 1
         game_over = False
         while not game_over:
             
@@ -161,13 +155,10 @@ class Usuario(Escena):
             if usuario != '':
                 self.pantalla.blit(self.texto_usuario, ((ANCHO-self.anchoTexto_usuario)//2 , 350))
 
-
             pg.display.flip()
-
         print("USUARIO = ", usuario)
 
-
-        return si_pierdes
+        return si_pierdes, usuario
 
 
 class Partida(Escena):
@@ -200,13 +191,6 @@ class Partida(Escena):
         # EXPLOSION ------------------------------------------------------------------------------------------------------------
         self.explosion = Explosion(0, 0, EstadoExplosion.OFF, 0)
 
-        # ASTEROIDES ------------------------------------------------------------------------------------------------------------
-        # self.asteroides = []
-        
-        # for i in range(8):
-        #     self.asteroide = Asteroide(center=(random.randrange(ANCHO+50, ANCHO+500), random.randrange(40, ALTO-40)))
-        #     self.asteroides.append(self.asteroide)
-
         # MARCADORES ------------------------------------------------------------------------------------------------------------
         self.letrero_vidas = Marcadores(20, 20, "nasalization-rg.otf", 24, (255,255,255))
         self.cuenta_vidas = Marcadores(120, 20, "nasalization-rg.otf", 24, (255,255,255))
@@ -229,9 +213,7 @@ class Partida(Escena):
         self.grupo_marcadores.add(self.letrero_vidas, self.cuenta_vidas, self.letrero_puntos, self.cuenta_puntos, self.letrero_nivel, self.cuenta_nivel, self.letrero_tiempo, self.tiempo)
         self.grupo_explosion.add(self.explosion)
 
-
         # SONIDOS ------------------------------------------------------------------------------------------------------------
-
         self.explosion_fx = self.carga_sonido("explosion")
         
     def carga_sonido(self, fx, volumen=1):
@@ -254,29 +236,25 @@ class Partida(Escena):
     def paso_nivel(self, nivel):
         self.lista_planetas[nivel].reset()
         
+        # ASTEROIDES ------------------------------------------------------------------------------------------------------------
         self.grupo_asteroides.empty()
         self.asteroides = []
         self.grupo_asteroides = pg.sprite.Group()
 
         if nivel == 0:
-            for i in range(10):
+            for i in range(6):
                 self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500) , random.randrange(40, ALTO-40)))
                 self.asteroides.append(self.asteroide)
         else:
-            for i in range(nivel * 20 // 2):
+            for i in range(nivel * 9):
                 self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500*self.nivel) , random.randrange(40, ALTO-40)))
                 self.asteroides.append(self.asteroide)
 
         self.grupo_asteroides.add(self.asteroides)
 
 
-
-
-
-
-    def bucle_principal(self, si_pierdes): ########################################################################################################
+    def bucle_principal(self, si_pierdes, usuario): ########################################################################################################
         print("soy partida")
-        
         self.reset()
         si_pierdes = 2
         game_over = False
@@ -342,7 +320,6 @@ class Partida(Escena):
                 self.temporizador_nivel += 1
                 self.player.estado = EstadoPlayer.ATERRIZANDO
                 self.lista_planetas[self.nivel].estado = EstadoPlaneta.MUESTRATE
-                print("NIVEL ???????????????????????????????", self.nivel)
 
                 if self.temporizador_nivel == LIMITE_TIEMPO_ANIMACION_CAMBIO_NIVEL:
                     self.nivel += 1
@@ -356,7 +333,6 @@ class Partida(Escena):
                     self.player.estado = EstadoPlayer.DESPEGANDO
 
             if self.nivel == 3 and self.cuenta_atras == 0:
-                # self.explosion.estado = EstadoExplosion.OFF
                 self.player.estado = EstadoPlayer.ATERRIZANDO
                 self.lista_planetas[self.nivel].estado = EstadoPlaneta.FIN
                 if self.temporizador_nivel > 1500:
@@ -384,12 +360,9 @@ class Partida(Escena):
                 self.pantalla.blit(self.background, (x_relativa, 0))
             self.x -= 0.3 # Velocidad movimiento background
             
-            #self.pantalla.blit(self.player.image, self.player.rect) # Haye que pasar la image (surface) y el rect (rectagulo) del Sprite de Nave
-            
             self.grupo_asteroides.draw(self.pantalla)
             self.grupo_explosion.draw(self.pantalla)
             self.lista_planetas[self.nivel].draw(self.pantalla)
-            # self.grupo_planeta.draw(self.pantalla)
             if self.explosion.estado == EstadoExplosion.OFF and self.vidas != 0:
                 self.player.draw(self.pantalla)
 
@@ -398,12 +371,9 @@ class Partida(Escena):
             if self.nivel == 3 and self.temporizador_nivel > 1100:
                 self.pantalla.blit(self.texto, ((ANCHO - self.anchoTexto)//2, 500))
 
-
             pg.display.flip()
         
-        print("ESTADO PLANETA = ", self.lista_planetas[self.nivel].estado)
-        print(si_pierdes)
-        return si_pierdes
+        return si_pierdes, usuario
 
 
 class Records(Escena):
@@ -433,7 +403,7 @@ class Records(Escena):
 
 
 
-    def bucle_principal(self, si_pierdes):
+    def bucle_principal(self, si_pierdes, usuario):
         print("soy records")
         si_pierdes = 2
         game_over = False
@@ -455,8 +425,6 @@ class Records(Escena):
             self.pantalla.blit(self.texto_records2, ((ANCHO - self.anchoTextoRecords2)//2, 350))
             self.pantalla.blit(self.texto_records3, ((ANCHO - self.anchoTextoRecords3)//2, 400))
 
-
-
             pg.display.flip()
 
-        return si_pierdes
+        return si_pierdes, usuario

@@ -1,27 +1,25 @@
 import sqlite3
+from sqlite3 import Error
+
+
 
 class BaseDatos():
-    def consultaSQL(self, consulta):
-        conn = sqlite3.connect("data/puntuaciones.db")
+
+    def crear_tabla(self):
+        try:
+            conn = sqlite3.connect("puntuaciones.db")
+            return conn
+        except Error:
+            print("Error")
+
+
+
+    def consulta(conn):
         cur = conn.cursor()
-        cur.execute(consulta)
+        cur.excecute('''CREATE TABLE RECORDS("nombre" text, "puntos" REAL NOT NULL, PRIMARY KEY("nombre"))''')
+        conn.commit
 
-
-        keys = []
-        for item in cur.description:
-            keys.append(item[0])
-
-        puntuaciones = []
-        for registro in cur.fetchall():
-            ix_clave = 0
-            d = {}
-            for columna in keys:
-                d[columna] = registro[ix_clave]
-                ix_clave += 1
-            puntuaciones.append(d)
-
-        return puntuaciones
-
+    conn = crear_tabla
 
 
 
