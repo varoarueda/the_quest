@@ -1,26 +1,39 @@
 import sqlite3
 from sqlite3 import Error
 
-
+'''
 
 class BaseDatos():
 
-    def crear_tabla(self):
+    def crear_conexion(self):
         try:
             conn = sqlite3.connect("puntuaciones.db")
             return conn
-        except Error:
-            print("Error")
+        except sqlite3.Error as error:
+            print("Se ha producido un error al crear la conexión:", error)
 
 
 
-    def consulta(conn):
+    def crear_tabla(conn, definicion):
         cur = conn.cursor()
-        cur.excecute('''CREATE TABLE RECORDS("nombre" text, "puntos" REAL NOT NULL, PRIMARY KEY("nombre"))''')
-        conn.commit
+        cur.excecute(definicion)
+        conn.commit()
 
-    conn = crear_tabla
+    conn = crear_tabla('records.db')
 
+    sql = """
+    CREATE TABLE records(
+        nombre TEXT,
+        puntos REAL NOT NULL,
+        PRIMARY KEY (nombre)
+    )
+    """
 
+    crear_tabla(conn, sql)
+
+    if conn:
+        conn.close()
+
+'''
 
 

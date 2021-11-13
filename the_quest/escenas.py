@@ -242,11 +242,11 @@ class Partida(Escena):
         self.grupo_asteroides = pg.sprite.Group()
 
         if nivel == 0:
-            for i in range(6):
+            for i in range(5):
                 self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500) , random.randrange(40, ALTO-40)))
                 self.asteroides.append(self.asteroide)
         else:
-            for i in range(nivel * 9):
+            for i in range(nivel * 5):
                 self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500*self.nivel) , random.randrange(40, ALTO-40)))
                 self.asteroides.append(self.asteroide)
 
@@ -392,13 +392,13 @@ class Records(Escena):
         self.texto1 = fuente2.render("RECORDS", True, (255, 255, 255))
         self.anchoTexto1 = self.texto1.get_width()
 
-        self.texto_records1 = fuente3.render("AVR - 120 PTOS", True, (255, 255, 255))
+        self.texto_records1 = fuente3.render("1er CLASIFICADO - XXX PTOS", True, (255, 255, 255))
         self.anchoTextoRecords1 = self.texto_records1.get_width()
 
-        self.texto_records2 = fuente3.render("MCF - 200 PTOS", True, (255, 255, 255))
+        self.texto_records2 = fuente3.render("2º CLASIFICADO - XXX PTOS", True, (255, 255, 255))
         self.anchoTextoRecords2 = self.texto_records2.get_width()
 
-        self.texto_records3 = fuente3.render("ERM - 125 PTOS", True, (255, 255, 255))
+        self.texto_records3 = fuente3.render("3er CLASIFICADO - XXX PTOS", True, (255, 255, 255))
         self.anchoTextoRecords3 = self.texto_records3.get_width()
 
 
