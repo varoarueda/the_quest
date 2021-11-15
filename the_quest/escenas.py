@@ -242,7 +242,7 @@ class Partida(Escena):
         self.grupo_asteroides = pg.sprite.Group()
 
         if nivel == 0:
-            for i in range(5):
+            for i in range(3):
                 self.asteroide = Asteroide(self.nivel, center=(random.randrange(ANCHO+50, ANCHO+500) , random.randrange(40, ALTO-40)))
                 self.asteroides.append(self.asteroide)
         else:
@@ -253,7 +253,7 @@ class Partida(Escena):
         self.grupo_asteroides.add(self.asteroides)
 
 
-    def bucle_principal(self, si_pierdes, usuario): ########################################################################################################
+    def bucle_principal(self, si_pierdes, usuario): 
         print("soy partida")
         self.reset()
         si_pierdes = 2

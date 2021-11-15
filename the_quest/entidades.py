@@ -14,7 +14,7 @@ class EstadoPlayer(Enum):
     
 class Nave(Sprite):
     disfraces = ["nave1.png", "nave2.png", "nave3.png", "nave4.png", "nave5.png"]
-    def __init__(self, estado, **kwargs): # **kwargs = Al instanciar, hay que meterle los pares clave/valor que me interesen = posicionamiento (x,y)
+    def __init__(self, estado, **kwargs): 
         super().__init__()
         self.imagenes = [] # Imagen animada
         for fichero in self.disfraces:
@@ -28,7 +28,7 @@ class Nave(Sprite):
         self.velocidad_y = VELOCIDAD_NAVE
 
         self.image = self.imagenes[self.imagen_activa]
-        self.rect = self.image.get_rect(**kwargs) # **kwargs permite clave-valor(posicion rect, valor) para posicionar el rect al instanciar Nave
+        self.rect = self.image.get_rect(**kwargs) 
 
         self.nivel = 0
         self.rotate = 0
